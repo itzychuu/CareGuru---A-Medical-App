@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import "../styles/bookAppointment.css";
+import "../styles/bookappointment.css";
 
 function BookAppointment() {
   const location = useLocation();
