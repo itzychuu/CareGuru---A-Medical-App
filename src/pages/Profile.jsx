@@ -62,8 +62,9 @@ function Profile() {
               onClick={async () => {
                 try {
                   await signInWithPopup(auth, provider);
-                } catch {
-                  alert("Google login failed");
+                } catch (err) {
+                  console.error("Google login error:", err);
+                  alert(err.message);
                 }
               }}
             >
