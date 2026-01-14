@@ -8,33 +8,31 @@ import { useAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-
 function Profile() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
   const [profileData, setProfileData] = useState(null);
 
-  // Load edited profile data
+  // ✅ Fetch profile from Firestore
   useEffect(() => {
-    const savedProfile = useEffect(() => {
-      const fetchProfile = async () => {
-        if (!user) return;
+    const fetchProfile = async () => {
+      if (!user) return;
 
+      try {
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
-          setProfileData(snap.data().profile);
+          setProfileData(snap.data().profile || {});
         }
-      };
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+      }
+    };
 
-      fetchProfile();
-    }, [user]);
+    fetchProfile();
+  }, [user]);
 
-    if (savedProfile) {
-      setProfileData(JSON.parse(savedProfile));
-    }
-  }, []);
-
+  // Light navbar
   useEffect(() => {
     document.body.classList.add("light-navbar");
     return () => document.body.classList.remove("light-navbar");
@@ -74,7 +72,7 @@ function Profile() {
           )}
         </div>
 
-        {/* Avatar (DISPLAY ONLY) */}
+        {/* Avatar */}
         <div className="profile-avatar">
           <div className="avatar-circle">
             {profileData?.image ? (
@@ -85,8 +83,6 @@ function Profile() {
               <span className="avatar-icon">👤</span>
             )}
           </div>
-
-
         </div>
 
         {/* Profile Card */}
