@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../styles/profile.css";
-
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { useAuth } from "../context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
 
 function Profile() {
   const navigate = useNavigate();
@@ -15,7 +17,19 @@ function Profile() {
 
   // Load edited profile data
   useEffect(() => {
-    const savedProfile = localStorage.getItem("profile");
+    const savedProfile = useEffect(() => {
+      const fetchProfile = async () => {
+        if (!user) return;
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          setProfileData(snap.data().profile);
+        }
+      };
+
+      fetchProfile();
+    }, [user]);
+
     if (savedProfile) {
       setProfileData(JSON.parse(savedProfile));
     }

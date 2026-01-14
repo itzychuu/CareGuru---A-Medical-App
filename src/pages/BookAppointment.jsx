@@ -3,14 +3,19 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/bookappointment.css";
 
+import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "../context/AuthContext";
+
 function BookAppointment() {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const doctor = location.state?.doctor;
 
   const [paymentMethod, setPaymentMethod] = useState("");
 
-  // Light navbar (white background page)
+  // Light navbar for white background
   useEffect(() => {
     document.body.classList.add("light-navbar");
     return () => document.body.classList.remove("light-navbar");
@@ -29,9 +34,14 @@ function BookAppointment() {
     );
   }
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     if (!paymentMethod) {
       alert("Please select a payment method");
+      return;
+    }
+
+    if (!user) {
+      alert("Please login to book an appointment");
       return;
     }
 
@@ -44,19 +54,30 @@ function BookAppointment() {
       paymentMethod,
     };
 
-    const existing =
-      JSON.parse(localStorage.getItem("tickets")) || [];
+    try {
+      const userRef = doc(db, "users", user.uid);
 
-    localStorage.setItem(
-      "tickets",
-      JSON.stringify([...existing, ticket])
-    );
+      // Ensure user document exists
+      await setDoc(
+        userRef,
+        { appointments: [] },
+        { merge: true }
+      );
 
-    alert(
-      "Appointment booked successfully!\nTicket sent to your email."
-    );
+      // Save appointment
+      await updateDoc(userRef, {
+        appointments: arrayUnion(ticket),
+      });
 
-    navigate("/profile");
+      alert(
+        "Appointment booked successfully!\nTicket sent to your email."
+      );
+
+      navigate("/profile");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to book appointment");
+    }
   };
 
   return (
@@ -81,9 +102,7 @@ function BookAppointment() {
               type="radio"
               name="payment"
               value="GPay"
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
+              onChange={(e) => setPaymentMethod(e.target.value)}
             />
             GPay
           </label>
@@ -93,9 +112,7 @@ function BookAppointment() {
               type="radio"
               name="payment"
               value="Credit / Debit Card"
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
+              onChange={(e) => setPaymentMethod(e.target.value)}
             />
             Credit / Debit card
           </label>
@@ -105,9 +122,7 @@ function BookAppointment() {
               type="radio"
               name="payment"
               value="Other UPI"
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
+              onChange={(e) => setPaymentMethod(e.target.value)}
             />
             Other UPI methods
           </label>
@@ -117,17 +132,12 @@ function BookAppointment() {
               type="radio"
               name="payment"
               value="Razorpay / Paytm"
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
+              onChange={(e) => setPaymentMethod(e.target.value)}
             />
             Razorpay / Paytm
           </label>
 
-          <button
-            className="pay-btn"
-            onClick={handleProceed}
-          >
+          <button className="pay-btn" onClick={handleProceed}>
             Proceed to Pay
           </button>
         </div>

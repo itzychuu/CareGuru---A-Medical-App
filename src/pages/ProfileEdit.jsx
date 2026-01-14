@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/profileEdit.css";
 import { useNavigate } from "react-router-dom";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "../context/AuthContext";
 
 
 function ProfileEdit() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -45,10 +49,25 @@ function ProfileEdit() {
 
 
 
-  const handleSave = () => {
-    localStorage.setItem("profile", JSON.stringify(formData));
-    navigate("/profile");
+  const handleSave = async () => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        profile: formData,
+      });
+
+      alert("Profile saved successfully");
+      navigate("/profile");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save profile");
+    }
   };
+
 
 
 

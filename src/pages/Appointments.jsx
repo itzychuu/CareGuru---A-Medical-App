@@ -1,12 +1,34 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "../context/AuthContext";
 
 function Appointments() {
-  const tickets =
-    JSON.parse(localStorage.getItem("tickets")) || [];
+  const { user } = useAuth();
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!user) return;
+
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          setTickets(snap.data().appointments || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch appointments", error);
+      }
+    };
+
+    fetchAppointments();
+  }, [user]);
 
   return (
     <>
       <Navbar />
+
       <div style={{ padding: "150px 80px" }}>
         <h1>My Appointments</h1>
 
@@ -20,8 +42,7 @@ function Appointments() {
                 marginTop: "20px",
                 padding: "20px",
                 borderRadius: "20px",
-                boxShadow:
-                  "0 6px 14px rgba(0,0,0,0.25)",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.25)",
               }}
             >
               <p><strong>Ticket:</strong> {t.ticketId}</p>
