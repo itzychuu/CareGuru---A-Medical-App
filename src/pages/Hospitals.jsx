@@ -8,7 +8,6 @@ function Hospitals() {
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState(hospitalsData);
 
-  // Light navbar for white background
   useEffect(() => {
     document.body.classList.add("light-navbar");
     return () => document.body.classList.remove("light-navbar");
@@ -16,14 +15,18 @@ function Hospitals() {
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
+
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
     const a =
       Math.sin(dLat / 2) ** 2 +
       Math.cos((lat1 * Math.PI) / 180) *
         Math.cos((lat2 * Math.PI) / 180) *
         Math.sin(dLon / 2) ** 2;
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
     return (R * c).toFixed(1);
   };
 
@@ -49,26 +52,38 @@ function Hospitals() {
     );
   };
 
+  const handleSearch = (e) => {
+    const text = e.target.value.toLowerCase();
+
+    const filtered = hospitalsData.filter((h) =>
+      h.name.toLowerCase().includes(text)
+    );
+
+    setHospitals(filtered);
+  };
+
   return (
     <>
       <Navbar />
 
       <div className="hospital-page">
-        {/* TOP BAR */}
+
         <div className="hospital-top">
           <input
             className="search-box"
             placeholder="Search for hospitals"
+            onChange={handleSearch}
           />
+
           <button className="nearest-btn" onClick={findNearestHospital}>
             Find Nearest Hospital
           </button>
         </div>
 
-        {/* LIST */}
         {hospitals.map((hospital) => (
           <div className="hospital-card" key={hospital.id}>
             <div className="hospital-row">
+
               <div className="hospital-info">
                 <h2>{hospital.name}</h2>
                 {hospital.distance && (
@@ -77,6 +92,7 @@ function Hospitals() {
               </div>
 
               <div className="hospital-actions">
+
                 <button
                   className="doctor-btn"
                   onClick={() =>
@@ -92,6 +108,7 @@ function Hospitals() {
                 >
                   Navigate Route ✈
                 </button>
+
               </div>
             </div>
 

@@ -6,21 +6,19 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 
-
 function ProfileEdit() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     age: "",
     gender: "",
     bloodGroup: "",
     contact: "",
-    image: ""   // ✅ MUST exist
+    image: ""
   });
 
-
-  // light navbar
   useEffect(() => {
     document.body.classList.add("light-navbar");
     return () => document.body.classList.remove("light-navbar");
@@ -38,16 +36,16 @@ function ProfileEdit() {
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = () => {
       setFormData((prev) => ({
         ...prev,
-        image: reader.result, // ✅ Base64 stored
+        image: reader.result,
       }));
     };
+
     reader.readAsDataURL(file);
   };
-
-
 
   const handleSave = async () => {
     if (!user) {
@@ -58,7 +56,7 @@ function ProfileEdit() {
     try {
       await setDoc(doc(db, "users", user.uid), {
         profile: formData,
-      });
+      }, { merge: true });
 
       alert("Profile saved successfully");
       navigate("/profile");
@@ -68,16 +66,12 @@ function ProfileEdit() {
     }
   };
 
-
-
-
-
   return (
     <>
       <Navbar />
 
       <div className="profile-edit-page">
-        {/* Avatar */}
+
         <div className="edit-avatar">
           <div className="edit-avatar-circle">
             {formData.image ? (
@@ -96,21 +90,10 @@ function ProfileEdit() {
               onChange={handleImageChange}
             />
           </label>
-
-
-          <label className="camera-upload">
-            📷
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImageChange}
-            />
-          </label>
         </div>
 
-        {/* FORM */}
         <div className="edit-form">
+
           <div className="form-row">
             <label>Name</label>
             <input
@@ -166,6 +149,7 @@ function ProfileEdit() {
           <button className="save-btn" onClick={handleSave}>
             Save Info
           </button>
+
         </div>
       </div>
     </>

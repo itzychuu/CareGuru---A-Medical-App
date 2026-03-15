@@ -62,7 +62,7 @@ function HospitalDetails() {
                 <button
                   className="book-btn"
                   onClick={() =>
-                    navigate(`/book/${hospital.id}`, {
+                    navigate(`/book-appointment`, {
                       state: { doctor },
                     })
                   }
