@@ -26,10 +26,9 @@ const hospitals = [
         field: "Orthopedics",
         image: doctor3,
       },
-    ]
-
-    ,
+    ],
   },
+
   {
     id: 2,
     name: "LifePlus Medical Center",
@@ -37,8 +36,20 @@ const hospitals = [
     lat: 8.5241,
     lng: 76.9366,
     description: "Advanced diagnostic and treatment center",
-    doctors: ["Dr. Ravi", "Dr. Suma"],
+    doctors: [
+      {
+        name: "Dr. Ravi",
+        field: "Dermatology",
+        image: doctor1,
+      },
+      {
+        name: "Dr. Suma",
+        field: "Pediatrics",
+        image: doctor2,
+      },
+    ],
   },
+
   {
     id: 3,
     name: "Green Valley Hospital",
@@ -46,7 +57,18 @@ const hospitals = [
     lat: 8.5581,
     lng: 76.8814,
     description: "24/7 emergency and pediatric care",
-    doctors: ["Dr. John", "Dr. Priya"],
+    doctors: [
+      {
+        name: "Dr. John",
+        field: "Neurology",
+        image: doctor2,
+      },
+      {
+        name: "Dr. Priya",
+        field: "Gynecology",
+        image: doctor3,
+      },
+    ],
   },
 ];
 

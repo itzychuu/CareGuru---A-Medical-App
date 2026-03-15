@@ -88,7 +88,7 @@ function BookAppointment() {
         {/* LEFT CARD */}
         <div className="doctor-summary">
           <div className="doctor-photo">
-            <img src={doctor.image} alt={doctor.name} />
+            <img src={doctor.image || "/doctors/default.jpg"} alt={doctor.name} />
           </div>
 
           <h2>{doctor.name}</h2>
