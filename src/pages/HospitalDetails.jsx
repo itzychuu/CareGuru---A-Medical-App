@@ -51,7 +51,7 @@ function HospitalDetails() {
                 {/* Profile Image */}
                 <div className="doctor-img">
                   <img
-                    src={doctor.image}
+                    src={doctor.image || "/doctors/default.jpg"}
                     alt={doctor.name}
                   />
                 </div>

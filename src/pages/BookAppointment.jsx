@@ -11,8 +11,8 @@ function BookAppointment() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const doctor = location.state?.doctor;
-  const hospitalName = location.state?.hospitalName;
+  const doctor = location.state?.doctor || null;
+  const hospitalName = location.state?.hospitalName || "Unknown Hospital";
 
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -62,7 +62,9 @@ function BookAppointment() {
       // Ensure user document exists
       await setDoc(
         userRef,
-        { appointments: [] },
+        {
+          appointments: arrayUnion(ticket),
+        },
         { merge: true }
       );
 

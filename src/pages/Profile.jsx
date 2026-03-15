@@ -77,7 +77,7 @@ function Profile() {
         <div className="profile-avatar">
           <div className="avatar-circle">
             {profileData?.image ? (
-              <img src={profileData.image} alt="Profile" />
+              <img src={profileData?.image} alt="Profile" />
             ) : user?.photoURL ? (
               <img src={user.photoURL} alt="Profile" />
             ) : (
