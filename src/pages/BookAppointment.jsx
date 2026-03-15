@@ -12,6 +12,7 @@ function BookAppointment() {
   const location = useLocation();
   const navigate = useNavigate();
   const doctor = location.state?.doctor;
+  const hospitalName = location.state?.hospitalName;
 
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -26,9 +27,9 @@ function BookAppointment() {
     return (
       <>
         <Navbar />
-        <div className="book-page">
-          <h2>Invalid booking session</h2>
-          <p>Please select a doctor again.</p>
+        <div style={{ padding: "150px", textAlign: "center" }}>
+          <h2>No Doctor Selected</h2>
+          <p>Please go back and select a doctor.</p>
         </div>
       </>
     );
@@ -47,6 +48,7 @@ function BookAppointment() {
 
     const ticket = {
       ticketId: "OP-" + Math.floor(100000 + Math.random() * 900000),
+      hospital: hospitalName,
       doctorName: doctor.name,
       field: doctor.field,
       date: new Date().toLocaleDateString(),
@@ -90,7 +92,7 @@ function BookAppointment() {
           <div className="doctor-photo">
             <img src={doctor.image || "/doctors/default.jpg"} alt={doctor.name} />
           </div>
-
+          <h3>{hospitalName}</h3>
           <h2>{doctor.name}</h2>
           <p>{doctor.field}</p>
         </div>
